@@ -12,7 +12,7 @@ a = ap.parse_args()
 net, T = GridNetwork(a.size, a.size), 1800.0
 agent, rng = SharedQAgent(use_prior=True, seed=a.seed), np.random.default_rng(a.seed)
 for ep in range(a.episodes):
-    lvl, tilt = rng.uniform(0.2, 0.5), rng.uniform(0, 0.5)
+    lvl, tilt = rng.uniform(0.2, 0.75), rng.uniform(0, 0.5)
     r = run_episode(net, agent, make_demand(net, lvl, tilt, 1000 + ep, T), T=T, train=True, seed=1000 + ep)
     agent.end_episode()
     if (ep + 1) % 10 == 0:

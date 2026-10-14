@@ -29,7 +29,7 @@ def run_episode(net, controller, demand, T=1800.0, ctrl_dt=5.0, train=False, see
     net.reset(seed)
     controller.reset(net)
     k_ctrl = int(round(ctrl_dt / net.dt))
-    tts = exited = entered = 0.0
+    tts = exited = entered = node_flux = 0.0
     for k in range(int(T / net.dt)):
         if k % k_ctrl == 0:
             net.switch(controller.decide(net, train))
@@ -37,7 +37,10 @@ def run_episode(net, controller, demand, T=1800.0, ctrl_dt=5.0, train=False, see
         tts += net.mass * net.dt
         exited += info["exit"]
         entered += info["entered"]
-    out = dict(TTS=tts, exited=exited, remaining=net.mass, entered=entered)
+        node_flux += info["node_flux"]
+    # average flux through the junctions [veh/min per junction] over the whole episode
+    flux = node_flux / (T / 60.0) / net.n_nodes
+    out = dict(TTS=tts, exited=exited, remaining=net.mass, entered=entered, flux=flux)
     if hasattr(controller, "ep_reward"):
         out["mean_reward"] = controller.ep_reward / max(1, int(T / ctrl_dt))
     return out

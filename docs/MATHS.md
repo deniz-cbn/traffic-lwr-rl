@@ -274,7 +274,15 @@ isolates the value of the sensor prior for cold-start convergence.
 
 ## 9. Evaluation metrics
 
-* **TTS** [veh·s] as in section 6 (primary; lower is better).
+* **Average junction flux** (primary in the report):
+  $$\bar\Phi=\frac{1}{K\,(T/60)}\sum_{t}\sum_{k=1}^{K}f_k(t)\,\Delta t\quad[\text{veh/min per junction}],$$
+  with $f_k=\sum_i f_i$ the node-model discharge of junction $k$ (section 5).
+  *Why it separates controllers only weakly:* if the mass in the network is stationary, conservation forces the
+  flow through each junction to equal its arrival flow, regardless of the controller. Controllers can differ only
+  through (a) vehicles stored in queues, which shift flux in time, and (b) capacity utilisation when saturated
+  (lost time, FIFO blocking). A junction serves one axis at a time, so $f_k\le 2q_{\max}=67.5$ veh/min, and about
+  62 veh/min is observed under saturation. Since flux is also the training reward, we report TTS as an independent cross-check.
+* **TTS** [veh·s] as in section 6 (cross-check; lower is better).
 * Throughput $D_{\text{ex}}(T)$ and residual vehicles $M(T)$.
 * Relative change versus the actuated controller on identical demand seeds:
   $\Delta=100\,(\overline{\text{TTS}}_{\text{method}}-\overline{\text{TTS}}_{\text{act}})/\overline{\text{TTS}}_{\text{act}}$.
